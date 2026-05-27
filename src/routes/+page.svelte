@@ -38,12 +38,6 @@
 
 	const typedTeams = teams as Team[];
 
-	function pickMockTeams() {
-		state.team1 = typedTeams.find((team) => team.name === 'France') ?? typedTeams[0];
-		state.team2 = typedTeams.find((team) => team.name === 'Netherlands') ?? typedTeams[1];
-		state.phase = 'order';
-	}
-
 	function chooseFirstKicker(kicker: Kicker) {
 		state.firstKicker = kicker;
 		state.phase = 'shootout';
@@ -73,19 +67,17 @@
 </script>
 
 <svelte:head>
-	<title>Penalty King v2 — Stage 1</title>
+	<title>Penalty King v2 — Stage 2</title>
 </svelte:head>
 
-<main class="min-h-screen bg-[#0a0a0c] p-6 text-[#f5f5f0]">
-	<p class="mb-6 text-sm uppercase tracking-[0.2em]">Penalty King v2 — Stage 1 skeleton</p>
-
+<main class="min-h-screen bg-[#0a0a0c] text-[#f5f5f0]">
 	{#if state.phase === 'select'}
-		<FlagGrid {state} teams={typedTeams} {pickMockTeams} />
+		<FlagGrid {state} teams={typedTeams} />
 	{:else if state.phase === 'order'}
-		<TeamPicker {state} {chooseFirstKicker} />
+		<div class="p-6"><TeamPicker {state} {chooseFirstKicker} /></div>
 	{:else if state.phase === 'shootout'}
-		<Shootout {state} {addMockKick} {endShootout} />
+		<div class="p-6"><Shootout {state} {addMockKick} {endShootout} /></div>
 	{:else if state.phase === 'scorecard'}
-		<Scorecard {state} {resetShootout} />
+		<div class="p-6"><Scorecard {state} {resetShootout} /></div>
 	{/if}
 </main>
