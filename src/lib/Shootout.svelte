@@ -29,6 +29,18 @@
 	const currentTeam = $derived(teamForKicker(currentKicker, team1, team2));
 	const currentLabel = $derived(kickLabel(appState.kicks.length));
 
+	function displayName(team: Team) {
+		const fallback: Record<string, string> = {
+			US: 'USA',
+			KR: 'KOR',
+			SA: 'KSA',
+			BA: 'BIH',
+			CD: 'COD'
+		};
+		if (team.name.length <= 12) return team.name;
+		return fallback[team.code] ?? team.code;
+	}
+
 	function clearTimer() {
 		if (timer) {
 			clearTimeout(timer);
@@ -64,55 +76,59 @@
 </script>
 
 {#if appState.team1 && appState.team2 && appState.firstKicker}
-	<section class="mx-auto flex min-h-screen w-full max-w-5xl flex-col bg-[#0a0a0c] px-4 py-4 text-[#f5f5f0] sm:px-6 lg:px-8">
-		<header class="grid min-h-[72px] grid-cols-[1fr_auto_1fr] items-center gap-3 border-b border-white/20 pb-3">
-			<div class="flex min-w-0 items-center gap-3 transition-opacity duration-200">
-				<span class="inline-flex aspect-[4/3] w-14 shrink-0 overflow-hidden rounded border border-white/20">
-					<span class={`fi fi-${flagClass(currentTeam)} h-full w-full`}></span>
+	<section class="mx-auto flex min-h-screen w-full max-w-5xl flex-col bg-[#0a0a0c] px-3 py-3 text-[#f5f5f0] sm:px-6 lg:px-8">
+		<header class="flex h-[54px] items-center gap-2 border-b border-white/[0.15]">
+			<div class="flex min-w-0 flex-1 items-center gap-2 transition-opacity duration-200">
+				<span class="fi-wrapper inline-flex h-8 shrink-0 overflow-hidden rounded-[2px] ring-1 ring-white/20 sm:h-10">
+					<span class={`fi fi-${flagClass(currentTeam)} h-full w-auto`}></span>
 				</span>
-				<span class="truncate text-sm font-medium uppercase tracking-[0.12em] text-[#f5f5f0]">
-					{currentTeam.name}
+				<span class="min-w-0 truncate text-[0.72rem] font-medium uppercase tracking-[0.08em] text-[#f5f5f0] sm:text-sm">
+					{displayName(currentTeam)}
 				</span>
 			</div>
 
-			<p class="text-center text-[0.72rem] font-medium uppercase tracking-[0.16em] text-[#f5f5f0]">
+			<p class="shrink-0 whitespace-nowrap text-center text-[0.66rem] font-medium uppercase tracking-[0.11em] text-[#f5f5f0] sm:text-[0.72rem]">
 				{currentLabel}
 			</p>
 
 			<button
 				type="button"
-				class="justify-self-end border-0 p-0 text-right text-[0.68rem] font-normal uppercase tracking-[0.14em] text-[#6a6a68] transition hover:text-[#f5f5f0]"
+				class="shrink-0 border-0 p-0 text-[0.66rem] font-medium uppercase tracking-[0.12em] text-[#6a6a68] underline-offset-4 transition hover:text-[#f5f5f0] hover:underline active:underline sm:text-[0.72rem]"
 				onclick={endShootout}
 			>
-				End shootout
+				End
 			</button>
 		</header>
 
-		<div class="py-3">
-			<HistoryStrip kicks={appState.kicks} team1={appState.team1} team2={appState.team2} />
-		</div>
+		<HistoryStrip kicks={appState.kicks} team1={appState.team1} team2={appState.team2} />
 
-		<main class="flex flex-1 flex-col justify-center gap-5 pb-5">
-			<div class="mx-auto w-full max-w-[720px]">
-				<PenaltyGrid selected={currentPrediction} color={currentTeam.color} onPick={pickZone} />
+		<main class="flex flex-1 flex-col">
+			<div class="flex justify-center pt-16 sm:pt-20">
+				<div class="w-full max-w-[620px]">
+					<PenaltyGrid selected={currentPrediction} color={currentTeam.color} onPick={pickZone} />
+				</div>
 			</div>
 
-			<div class="flex min-h-[56px] items-center justify-center">
-				{#if showNext && currentPrediction !== null}
+			{#if showNext && currentPrediction !== null}
+				<div class="mt-10 flex justify-center pb-7">
 					<button
 						type="button"
-						class="animate-[fadeIn_200ms_ease-out] rounded-lg border border-[#f5f5f0] px-6 py-4 text-sm font-medium uppercase tracking-[0.16em] text-[#f5f5f0]"
+						class="w-[60vw] max-w-[320px] animate-[fadeIn_200ms_ease-out] rounded-lg border border-[#f5f5f0] px-5 py-4 text-sm font-medium uppercase tracking-[0.16em] text-[#f5f5f0]"
 						onclick={nextKick}
 					>
 						Next kick →
 					</button>
-				{/if}
-			</div>
+				</div>
+			{/if}
 		</main>
 	</section>
 {/if}
 
 <style>
+	.fi-wrapper :global(.fi) {
+		background-size: cover;
+	}
+
 	@keyframes fadeIn {
 		from {
 			opacity: 0;
