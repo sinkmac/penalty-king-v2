@@ -1,21 +1,8 @@
 <script lang="ts">
-	type Team = {
-		name: string;
-		code: string;
-		color: string;
-	};
-	type State = {
-		phase: 'select' | 'order' | 'shootout' | 'scorecard';
-		team1: Team | null;
-		team2: Team | null;
-		firstKicker: 'team1' | 'team2' | null;
-		kicks: { kicker: 'team1' | 'team2'; predictionZone: number }[];
-		inSuddenDeath: boolean;
-		matchTitle: string;
-	};
+	import { flagClass, type AppState, type Team } from './types';
 
 	let { state: appState, teams } = $props<{
-		state: State;
+		state: AppState;
 		teams: Team[];
 	}>();
 
@@ -37,11 +24,6 @@
 		return code ? teams.find((team: Team) => team.code === code) : null;
 	}
 
-	function flagClass(team: Team) {
-		if (team.code === 'EN') return 'gb-eng';
-		if (team.code === 'SC') return 'gb-sct';
-		return team.code.toLowerCase();
-	}
 
 	function selectTeam(team: Team) {
 		if (isSelected(team)) return;

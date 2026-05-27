@@ -4,29 +4,9 @@
 	import Shootout from '$lib/Shootout.svelte';
 	import TeamPicker from '$lib/TeamPicker.svelte';
 	import teams from '$lib/teams.json';
+	import type { AppState, Kicker, Team } from '$lib/types';
 
-	type Phase = 'select' | 'order' | 'shootout' | 'scorecard';
-	type Team = {
-		name: string;
-		code: string;
-		color: string;
-	};
-	type Kicker = 'team1' | 'team2';
-	type Kick = {
-		kicker: Kicker;
-		predictionZone: number;
-	};
-	type State = {
-		phase: Phase;
-		team1: Team | null;
-		team2: Team | null;
-		firstKicker: Kicker | null;
-		kicks: Kick[];
-		inSuddenDeath: boolean;
-		matchTitle: string;
-	};
-
-	let state = $state<State>({
+	let state = $state<AppState>({
 		phase: 'select',
 		team1: null,
 		team2: null,
@@ -43,10 +23,13 @@
 		state.phase = 'shootout';
 	}
 
-	function addMockKick() {
-		const kicker: Kicker = state.kicks.length % 2 === 0 ? state.firstKicker ?? 'team1' : state.firstKicker === 'team1' ? 'team2' : 'team1';
-		state.kicks = [...state.kicks, { kicker, predictionZone: state.kicks.length % 9 }];
-		state.inSuddenDeath = state.kicks.length > 10;
+	function backToSelect() {
+		state.team1 = null;
+		state.team2 = null;
+		state.firstKicker = null;
+		state.kicks = [];
+		state.inSuddenDeath = false;
+		state.phase = 'select';
 	}
 
 	function endShootout() {
@@ -67,16 +50,16 @@
 </script>
 
 <svelte:head>
-	<title>Penalty King v2 — Stage 2</title>
+	<title>Penalty King v2 — Stage 3</title>
 </svelte:head>
 
 <main class="min-h-screen bg-[#0a0a0c] text-[#f5f5f0]">
 	{#if state.phase === 'select'}
 		<FlagGrid {state} teams={typedTeams} />
 	{:else if state.phase === 'order'}
-		<div class="p-6"><TeamPicker {state} {chooseFirstKicker} /></div>
+		<TeamPicker {state} {chooseFirstKicker} goBack={backToSelect} />
 	{:else if state.phase === 'shootout'}
-		<div class="p-6"><Shootout {state} {addMockKick} {endShootout} /></div>
+		<Shootout {state} {endShootout} />
 	{:else if state.phase === 'scorecard'}
 		<div class="p-6"><Scorecard {state} {resetShootout} /></div>
 	{/if}
