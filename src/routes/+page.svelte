@@ -50,7 +50,7 @@
 </script>
 
 <svelte:head>
-	<title>Penalty King v2 — Stage 3</title>
+	<title>Penalty King v2 — Stage 4</title>
 </svelte:head>
 
 <main class="min-h-screen bg-[#0a0a0c] text-[#f5f5f0]">
@@ -61,6 +61,6 @@
 	{:else if state.phase === 'shootout'}
 		<Shootout {state} {endShootout} />
 	{:else if state.phase === 'scorecard'}
-		<div class="p-6"><Scorecard {state} {resetShootout} /></div>
+		<Scorecard {state} {resetShootout} />
 	{/if}
 </main>

@@ -25,6 +25,7 @@
 	},
 	"dependencies": {
 		"@fontsource/inter": "^5.2.8",
-		"flag-icons": "^7.5.0"
+		"flag-icons": "^7.5.0",
+		"html-to-image": "^1.11.13"
 	}
 }
